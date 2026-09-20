@@ -168,7 +168,7 @@ function processCommand(command) {
 
 
     // Date
-    else if (command.includes("date")) {
+    else if (command.includes("date") ) {
 
         const now = new Date();
 
