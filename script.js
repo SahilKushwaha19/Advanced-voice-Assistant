@@ -114,7 +114,7 @@ function processCommand(command) {
 
 
     // YouTube
-    if (command.includes("open youtube")) {
+    if (command.includes("open the youtube")) {
 
         speak("Opening YouTube");
 
