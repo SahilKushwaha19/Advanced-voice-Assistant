@@ -11,7 +11,7 @@ console.log("ENV:", process.env.GEMINI_API_KEY ? "FOUND" : "NOT FOUND");
 const app = express();
 
 app.use(express.json());
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, "../frontend")));
 
 const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY
@@ -20,7 +20,7 @@ const ai = new GoogleGenAI({
 
 // Home page
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "index.html"));
+    res.sendFile(path.join(__dirname, "../frontend/index.html"));
 });
 
 
