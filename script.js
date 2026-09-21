@@ -127,10 +127,10 @@ function processCommand(command) {
 
 
     // Google
-    else if (command.includes("open google")) {
+    else if (command.includes("open whatsapp")) {
 
-        speak("Opening Google");
-        speak("Opening google")
+        speak("Opening whatsapp");
+        speak("Opening whatsapp")
 
         window.open(
             "https://web.whatsapp.com",
@@ -184,8 +184,8 @@ function processCommand(command) {
 
     else if (
         command.includes("what is your name") || 
-        command.includes("what's your name") || 
-        command.includes("tumhara name") 
+        command.includes("what's your name") 
+ 
         
     ) {
         speak("My name is Ayva , your personal voice assistant");
