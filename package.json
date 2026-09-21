@@ -1,0 +1,26 @@
+{
+  "name": "advanced-voice-assistant",
+  "version": "1.0.0",
+  "description": "My personal assistant",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SahilKushwaha19/Advanced-voice-Assistant.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/SahilKushwaha19/Advanced-voice-Assistant/issues"
+  },
+  "homepage": "https://github.com/SahilKushwaha19/Advanced-voice-Assistant#readme",
+  "dependencies": {
+    "@google/genai": "^2.23.0",
+    "dotenv": "^18.0.1",
+    "express": "^5.2.1"
+  }
+}

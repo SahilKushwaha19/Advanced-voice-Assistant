@@ -130,19 +130,7 @@ function processCommand(command) {
     else if (command.includes("open google")) {
 
         speak("Opening Google");
-
-        window.open(
-            "https://www.google.com",
-            "_blank"
-        );
-
-    }
-
-
-    // WhatsApp
-    else if (command.includes("open whatsapp")) {
-
-        speak("Opening WhatsApp");
+        speak("Opening google")
 
         window.open(
             "https://web.whatsapp.com",
@@ -206,13 +194,50 @@ function processCommand(command) {
 
     // Unknown command
     else {
-
-        speak(
-            "Sorry, I don't understand this command yet."
-        );
+        askGemini(command);
 
     }
 
+}
+// -----------------------------
+// GEMINI AI
+// -----------------------------
+
+async function askGemini(question) {
+
+    status.innerText = "Thinking... 🤖";
+
+    try {
+
+        const response = await fetch("/api/ask", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                question: question
+            })
+        });
+
+        const data = await response.json();
+
+        console.log("Gemini Response:", data);
+
+        if (data.answer) {
+            status.innerText = "Answer ready";
+            speak(data.answer);
+        } else {
+            status.innerText = "Gemini Error";
+            speak(data.error || "Gemini did not return an answer.");
+        }
+
+    } catch (error) {
+
+        console.error("Gemini Error:", error);
+
+        speak("Sorry, there was a problem connecting to Gemini.");
+
+    }
 }
 
 
@@ -246,17 +271,37 @@ function speak(text) {
 
     assistantText.innerText = text;
 
-    const speech =
-        new SpeechSynthesisUtterance(text);
+    const speech = new SpeechSynthesisUtterance(text);
 
     speech.lang = "en-IN";
+    speech.rate = 0.95;
+    speech.pitch = 1.2;
 
-    speech.rate = 1;
+    const voices = window.speechSynthesis.getVoices();
 
-    speech.pitch = 1;
-
-    window.speechSynthesis.speak(
-        speech
+    const femaleVoice = voices.find(voice =>
+        voice.lang.startsWith("en") &&
+        /female|zira|samantha|google uk english female/i.test(voice.name)
     );
 
+    if (femaleVoice) {
+        speech.voice = femaleVoice;
+    }
+
+    window.speechSynthesis.speak(speech);
 }
+
+
+// -----------------------------
+// BACKEND CONNECTION TEST
+// -----------------------------
+
+fetch("/api/test")
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);
+    })
+    .catch(error => {
+        console.error("Backend connection failed:", error);
+    });
+    
