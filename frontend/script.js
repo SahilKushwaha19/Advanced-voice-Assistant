@@ -123,11 +123,10 @@ function processCommand(command) {
             "_blank"
         );
 
-    }
+    } else if (command.includes("open the whatsapp"))
+   
 
-
-    // Google
-    else if (command.includes("open whatsapp")) {
+         {
 
         speak("Opening whatsapp");
         speak("Opening whatsapp")
@@ -137,11 +136,7 @@ function processCommand(command) {
             "_blank"
         );
 
-    }
-
-
-    // Time
-    else if (command.includes("time")) {
+    } else if (command.includes("time")) {
 
         const now = new Date();
 
@@ -188,7 +183,7 @@ function processCommand(command) {
  
         
     ) {
-        speak("My name is Ayva , your personal voice assistant");
+        speak("My name is Ava , your personal voice assistant");
     }
 
 
