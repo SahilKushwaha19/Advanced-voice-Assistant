@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+
     
 }
 
@@ -12,9 +13,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #020b2d;
 
-    background: #101010;
-    color: white;
 }
 
 .container {
@@ -22,39 +22,50 @@ body {
     max-width: 600px;
 
     text-align: center;
+    background-color: #07152f;
 }
+
+
+
+
 
 h1 {
     font-size: 32px;
     margin-bottom: 10px;
+    color: #ffffff;
+    b
 }
 
 .subtitle {
-    color: #aaa;
+    
     margin-bottom: 30px;
+    color: white;
+    background-color:#168cff;
+ 
 }
 
 .assistant {
     width: 150px;
     height: 150px;
-
+    
     margin: auto;
-
+    
     border-radius: 50%;
-
+    
     display: flex;
     justify-content: center;
     align-items: center;
-
+    
     font-size: 60px;
-
-    background: #222;
+    
     border: 3px solid #555;
+    background: linear-gradient(135deg, #168cff, #7b35ff)
 }
 
 #status {
     margin: 20px 0;
-    color: #bbb;
+    color: #ffffff;
+    background-color:;
 }
 
 button {
@@ -69,13 +80,15 @@ button {
 }
 
 #micBtn {
-    background: #444;
     color: white;
+    background:linear-gradient(135deg, #168cff, #7b35ff)
 }
 
 #sendBtn {
-    background: #444;
-    color: white;
+    height: 50px;
+    width: 80px;
+    background-color: #087ff5;
+    color: #ffffff;
 }
 
 .box {
@@ -85,17 +98,20 @@ button {
 
     border-radius: 10px;
 
-    background: #1d1d1d;
+    
+    background-color:#09265f;
+    border: 2px solid #168cff;
 
     text-align: left;
 }
 
 .box h3 {
     margin-bottom: 8px;
+    color: #ffffff;
 }
 
 .box p {
-    color: #ccc;
+    color: #e0f7ff;
 }
 
 .input-area {
@@ -104,6 +120,7 @@ button {
     gap: 10px;
 
     margin-top: 20px;
+    background-color: #06142e;
 }
 
 #commandInput {
@@ -115,9 +132,9 @@ button {
 
     border: 1px solid #555;
 
-    background: #1d1d1d;
+background-color: #071a4f;
 
-    color: white;
+    color: #9bc9e8;
 
     outline: none;
 }

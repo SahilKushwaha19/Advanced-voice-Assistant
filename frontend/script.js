@@ -265,6 +265,7 @@ sendBtn.addEventListener("click", () => {
 function speak(text) {
 
     assistantText.innerText = text;
+    text = text.replace(/[*#_`` ]/g,"");
 
     const speech = new SpeechSynthesisUtterance(text);
 
