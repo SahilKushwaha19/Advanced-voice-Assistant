@@ -41,6 +41,38 @@ let recognition;
 let isListening = false;
 let isSpeaking = false;
 
+function browserSpeak(text) {
+    if (!text) return;
+
+    window.speechSynthesis.cancel();
+
+    assistantText.innerText = text;
+
+    const speech = new SpeechSynthesisUtterance(text);
+
+    speech.lang = "en-IN";
+    speech.rate = 0.9;
+    speech.pitch = 1.05;
+    speech.volume = 1;
+
+    speech.onstart = () => {
+        isSpeaking = true;
+        status.innerText = "Ava is speaking... 🔊";
+    };
+
+    speech.onend = () => {
+        isSpeaking = false;
+        status.innerText = "Ready";
+    };
+
+    speech.onerror = () => {
+        isSpeaking = false;
+        status.innerText = "Ready";
+    };
+
+    window.speechSynthesis.speak(speech);
+}
+
 
 // =====================================================
 // CONVERSATION STATE
@@ -1437,8 +1469,7 @@ async function speak(text) {
         isSpeaking =
             false;
 
-        status.innerText =
-            "Voice generation failed.";
+        browserSpeak(text);
 
     }
 
