@@ -650,7 +650,7 @@ if (recognition) {
 // COMMAND PROCESSOR
 // =====================================================
 
-function processCommand(command) {
+async function processCommand(command) {
     console.log("Voice command:", command);
 
     command =
@@ -720,56 +720,71 @@ function processCommand(command) {
 
     }
 
+    // OPEN WINDOWS APPS
+    if (
+        command.includes("open whatsapp desktop") ||
+        command.includes("open whatsapp app") ||
+        command.includes("open vs code") ||
+        command.includes("open vscode")
+    ) {
+        let app = "";
+
+        if (
+            command.includes("open whatsapp desktop") ||
+            command.includes("open whatsapp app")
+        ) {
+            app = "whatsapp";
+        } else {
+            app = "vscode";
+        }
+
+        try {
+            const response = await fetch("/api/open-app", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ app })
+            });
+
+            const data = await response.json();
+
+            speak(data.message || data.error || "Command completed");
+
+        } catch (error) {
+            console.error("Open app error:", error);
+            speak("App open nahi ho paya. Backend check karo.");
+        }
+
+        return;
+    }
 
     // =================================================
     // YOUTUBE SEARCH
     // =================================================
-
+// YOUTUBE SEARCH
     if (
-        command.startsWith(
-            "search youtube for"
-        ) ||
-        command.startsWith(
-            "youtube search for"
-        ) ||
-        command.startsWith(
-            "search on youtube for"
-        )
+        command.startsWith("search youtube for") ||
+        command.startsWith("youtube search for") ||
+        command.startsWith("search on youtube for") ||
+        command.startsWith("youtube par") ||
+        command.startsWith("search youtube")
     ) {
-
-        let query =
-            command
-                .replace(
-                    "search youtube for",
-                    ""
-                )
-                .replace(
-                    "youtube search for",
-                    ""
-                )
-                .replace(
-                    "search on youtube for",
-                    ""
-                )
-                .trim();
-
+        let query = command
+            .replace("search on youtube for", "")
+            .replace("search youtube for", "")
+            .replace("youtube search for", "")
+            .replace("search youtube", "")
+            .replace("youtube par", "")
+            .replace(/^for\s+/, "")
+            .trim();
 
         if (!query) {
-
-            speak(
-                "What should I search on YouTube?"
-            );
-
+            speak("What should I search on YouTube?");
             return;
-
         }
 
-
-        speak(
-            "Searching YouTube for " +
-            query
-        );
-
+        speak("Searching YouTube for " + query);
 
         window.open(
             "https://www.youtube.com/results?search_query=" +
@@ -777,12 +792,8 @@ function processCommand(command) {
             "_blank"
         );
 
-
         return;
-
     }
-
-
     // =================================================
     // OPEN YOUTUBE
     // =================================================
@@ -1044,6 +1055,7 @@ async function askGemini(question) {
 
 
     try {
+        const startTime = performance.now();
 
         const response =
             await fetch(
@@ -1067,6 +1079,11 @@ async function askGemini(question) {
 
         const data =
             await response.json();
+            console.log(
+    "AI response time:",
+    ((performance.now() - startTime) / 1000).toFixed(2),
+    "seconds"
+);
 
 
         console.log(
@@ -1327,29 +1344,23 @@ function getAvaVoice() {
 // =====================================================
 // CLEAN SPEECH TEXT
 // =====================================================
-
 function cleanSpeechText(text) {
-
-    return text
-
-        .replace(/\*\*/g, "")
-
-        .replace(/\*/g, "")
-
-        .replace(/#/g, "")
-
-        .replace(/_/g, "")
-
-        .replace(/`/g, "")
-
-        .replace(/[{}[\]]/g, "")
-
+    return String(text || "")
+        .replace(/```[\s\S]*?```/g, " code omitted ")
+        .replace(/https?:\/\/\S+/g, " link ")
+        .replace(/https?:/gi, "")
+        .replace(/\*\*(.*?)\*\*/g, "$1")
+        .replace(/\*(.*?)\*/g, "$1")
+        .replace(/__(.*?)__/g, "$1")
+        .replace(/_(.*?)_/g, "$1")
+        .replace(/~~(.*?)~~/g, "$1")
+        .replace(/^#{1,6}\s*/gm, "")
+        .replace(/^[\s]*[-*+]\s+/gm, "")
+        .replace(/^\s*\d+[.)]\s+/gm, "")
+        .replace(/[`#*_~>|[\]{}]/g, "")
         .replace(/\s+/g, " ")
-
         .trim();
-
 }
-
 
 // =====================================================
 // SPEAK
@@ -1362,6 +1373,7 @@ function cleanSpeechText(text) {
 let currentAudio = null;
 
 async function speak(text) {
+    text = cleanSpeechText(text);
 
     assistantText.innerText =
         text;
