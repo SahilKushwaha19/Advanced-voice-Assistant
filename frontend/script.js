@@ -27,6 +27,111 @@ const assistantText =
 const status =
     document.getElementById("status");
 
+    // =====================================================
+// CONVERSATION HISTORY
+// =====================================================
+
+const historyBtn = document.getElementById("historyBtn");
+const resetHistoryBtn = document.getElementById("resetHistoryBtn");
+const historyContainer = document.getElementById("historyContainer");
+const historyList = document.getElementById("historyList");
+
+let savedHistory = [];
+
+try {
+    savedHistory = JSON.parse(
+        localStorage.getItem("avaConversationHistory") || "[]"
+    );
+} catch (error) {
+    savedHistory = [];
+}
+
+let currentHistoryEntry = null;
+
+function saveHistory() {
+    try {
+        localStorage.setItem(
+            "avaConversationHistory",
+            JSON.stringify(savedHistory)
+        );
+    } catch (error) {
+        console.error("Could not save history:", error);
+    }
+}
+
+function renderHistory() {
+    if (!historyList) return;
+
+    historyList.replaceChildren();
+
+    if (savedHistory.length === 0) {
+        historyList.textContent = "No saved conversations yet.";
+        return;
+    }
+
+    [...savedHistory].reverse().forEach((entry) => {
+        const item = document.createElement("div");
+        item.className = "history-entry";
+
+        const date = document.createElement("small");
+        date.textContent = entry.time;
+
+        const user = document.createElement("p");
+        user.textContent = "You: " + entry.user;
+
+        const assistant = document.createElement("p");
+        assistant.textContent =
+            "Ava: " + (entry.assistant || "No response recorded");
+
+        item.append(date, user, assistant);
+        historyList.appendChild(item);
+    });
+}
+
+if (historyBtn && historyContainer) {
+    historyBtn.addEventListener("click", () => {
+        historyContainer.hidden = !historyContainer.hidden;
+
+        if (!historyContainer.hidden) {
+            renderHistory();
+            historyBtn.textContent = "Hide Saved History";
+        } else {
+            historyBtn.textContent = "Show Saved History";
+        }
+    });
+}
+
+if (resetHistoryBtn) {
+    resetHistoryBtn.addEventListener("click", () => {
+        if (!confirm("Delete all saved conversation history?")) return;
+
+        savedHistory = [];
+        currentHistoryEntry = null;
+        saveHistory();
+        renderHistory();
+    });
+}
+
+function recordUserCommand(command) {
+    currentHistoryEntry = {
+        time: new Date().toLocaleString(),
+        user: command,
+        assistant: ""
+    };
+
+    savedHistory.push(currentHistoryEntry);
+    saveHistory();
+}
+
+function recordAssistantResponse(text) {
+    if (!currentHistoryEntry) return;
+
+    currentHistoryEntry.assistant = text;
+    saveHistory();
+}
+
+renderHistory();
+
 
 // =====================================================
 // SPEECH RECOGNITION
@@ -47,6 +152,7 @@ function browserSpeak(text) {
     window.speechSynthesis.cancel();
 
     assistantText.innerText = text;
+    recordAssistantResponse(text);
 
     const speech = new SpeechSynthesisUtterance(text);
 
@@ -652,7 +758,7 @@ if (recognition) {
 
 async function processCommand(command) {
     console.log("Voice command:", command);
-
+recordUserCommand(command);
     command =
         command.toLowerCase()
         .replace(/[.,!?]/g, "")
@@ -1374,7 +1480,7 @@ let currentAudio = null;
 
 async function speak(text) {
     text = cleanSpeechText(text);
-
+recordAssistantResponse(text);
     assistantText.innerText =
         text;
 
